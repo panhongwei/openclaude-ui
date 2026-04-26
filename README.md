@@ -173,10 +173,3 @@ bun run build:chat:linux      # 打包 Linux AppImage
 | 工具可视化 | 文本输出 | 图形化实时展示 |
 | Skill 调用 | `/skill` 命令 | 输入框 `/` 菜单 |
 | 适用人群 | 开发者 | 所有用户 |
-
----
-
-## 声明
-
-本项目是基于 [OpenClaude](https://github.com/Gitlawb/openclaude) 的独立社区衍生版本，与 Anthropic 无关联。  
-"Claude" 和 "Claude Code" 是 Anthropic PBC 的商标。详见 [LICENSE](LICENSE)。
