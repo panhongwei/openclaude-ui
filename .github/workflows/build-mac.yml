@@ -1,0 +1,64 @@
+name: Build macOS
+
+on:
+  # 推送 v* tag 时自动触发（如 v0.6.0）
+  push:
+    tags:
+      - "v*"
+  # 手动触发，可选择目标 release tag
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "上传到哪个 Release tag（如 v0.6.0）"
+        required: true
+        default: "v0.6.0"
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build renderer libs
+        run: bun run build:renderer-libs
+
+      - name: Build Electron main process
+        run: bun run build:electron
+
+      - name: Package macOS dmg
+        run: bun run build:chat:mac
+        env:
+          # 禁用代码签名，避免没有 Apple 开发者证书时报错
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: List build output
+        run: ls -lh dist-electron/
+
+      - name: Upload to Release (tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist-electron/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Release (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          files: |
+            dist-electron/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
