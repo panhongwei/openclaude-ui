@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>openclaude chat</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="lib/highlight.css" />
+</head>
+<body>
+
+  <!-- ── 顶部标题栏 ── -->
+  <div id="header">
+    <div class="header-left">
+      <button id="sidebar-toggle" title="折叠 / 展开侧栏">‹</button>
+      <span class="brand-logo"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4Z"/></svg></span>
+      <span class="brand-name">openclaude</span>
+    </div>
+    <div class="header-right">
+      <span id="provider-badge" class="provider-badge" title="当前提供商"></span>
+      <select id="model-select" title="选择模型"></select>
+      <button id="theme-btn"    title="切换主题">◐</button>
+      <button id="settings-btn" title="API 密钥设置 (Ctrl+,)">⚙</button>
+      <button id="proxy-btn"    title="网络代理设置">🌐</button>
+      <button id="skills-btn"   title="Skill 目录设置">📂</button>
+      <button id="new-chat-btn" title="新对话 (Ctrl+N)">＋</button>
+    </div>
+  </div>
+
+  <!-- ── 主体区域 ── -->
+  <div id="body">
+
+    <!-- ── 左侧栏 ── -->
+    <div id="sidebar">
+      <div id="projects-section">
+        <div class="sidebar-section-header">
+          <span class="sidebar-section-title">项目</span>
+          <button id="new-project-btn" title="新建工程">＋</button>
+        </div>
+        <div id="project-list"></div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div id="filetree-section">
+        <div class="sidebar-section-header">
+          <span class="sidebar-section-title">工作目录</span>
+          <button id="filetree-refresh" class="sidebar-icon-btn" title="刷新目录">
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.65 6.35A7.958 7.958 0 0012 4C7.58 4 4.01 7.58 4.01 12S7.58 20 12 20c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          </button>
+        </div>
+        <div id="folder-path" class="folder-path" title="">未选择</div>
+        <div id="file-tree"   class="file-tree"></div>
+      </div>
+    </div>
+
+    <!-- ── 聊天区 ── -->
+    <div id="main">
+
+      <!-- Tab 栏 -->
+      <div id="tab-bar"></div>
+
+      <!-- Chat Pane（主框，不可关闭） -->
+      <div id="chat-pane" class="tab-pane active">
+        <!-- 搜索栏（仅 Chat Tab 内使用） -->
+        <div id="search-bar" class="hidden">
+          <input id="search-input" placeholder="查找…" autocomplete="off" spellcheck="false" />
+          <span id="search-count" class="search-count"></span>
+          <button id="search-prev" title="上一个">↑</button>
+          <button id="search-next" title="下一个">↓</button>
+          <button id="search-close" title="关闭">✕</button>
+        </div>
+        <div id="messages" role="log" aria-live="polite"></div>
+        <div id="input-bar">
+          <span class="input-prompt">❯</span>
+          <textarea id="input"
+            placeholder="输入消息…   Enter 发送 · Shift+Enter 换行"
+            rows="1" autocomplete="off" spellcheck="false"></textarea>
+          <button id="send-btn" title="发送 (Enter)">↑</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── 底部状态栏 ── -->
+  <div id="status-bar"></div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       设置弹窗
+       ════════════════════════════════════════════════════════════ -->
+  <div id="settings-overlay" class="modal-overlay hidden">
+    <div class="modal">
+
+      <div class="modal-header">
+        <span class="modal-title">⚙ &nbsp;提供商 &amp; 模型配置</span>
+        <button id="settings-close" class="modal-close" title="关闭">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- 各提供商配置区（动态生成） -->
+        <div id="settings-providers"></div>
+
+      </div>
+
+      <div class="modal-footer">
+        <span id="settings-msg" class="settings-msg"></span>
+        <div class="modal-btns">
+          <button id="settings-cancel" class="btn-ghost">取消</button>
+          <button id="settings-save"   class="btn-primary">保存</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 代理设置弹出面板 ── -->
+  <div id="proxy-popup" class="settings-popup hidden">
+    <div class="settings-popup-header">
+      <span class="settings-popup-title">🌐 网络代理</span>
+      <button id="proxy-popup-close" class="modal-close" title="关闭">✕</button>
+    </div>
+    <div class="settings-popup-body">
+      <label class="proxy-toggle-label" style="margin-bottom:10px;display:flex;">
+        <input type="checkbox" id="proxy-enabled" />
+        <span>启用全局代理</span>
+      </label>
+      <div id="proxy-fields" class="proxy-fields hidden">
+        <div class="form-row">
+          <span class="form-label">代理地址</span>
+          <input type="text" class="form-input" id="proxy-url"
+            placeholder="http://127.0.0.1:7890  或  socks5://127.0.0.1:1080" />
+        </div>
+        <div class="form-row">
+          <span class="form-label">排除地址</span>
+          <input type="text" class="form-input" id="proxy-bypass"
+            placeholder="localhost,127.0.0.1,::1" />
+        </div>
+        <div class="proxy-tip">
+          支持 HTTP / HTTPS 代理（如 Clash、Surge、V2Ray 的 HTTP 模式）。<br>
+          代理仅作用于 API 请求，不影响其他网络连接。
+        </div>
+      </div>
+    </div>
+    <div class="settings-popup-footer">
+      <span id="proxy-popup-msg" class="settings-msg"></span>
+      <button id="proxy-popup-save" class="btn-primary btn-sm">保存</button>
+    </div>
+  </div>
+
+  <!-- ── Skill 目录弹出面板 ── -->
+  <div id="skills-popup" class="settings-popup hidden">
+    <div class="settings-popup-header">
+      <span class="settings-popup-title">📂 Skill 目录</span>
+      <button id="skills-popup-close" class="modal-close" title="关闭">✕</button>
+    </div>
+    <div class="settings-popup-body">
+      <div class="form-row" style="align-items:center;gap:6px;flex-wrap:wrap;">
+        <span class="form-label">自定义目录</span>
+        <input type="text" class="form-input" id="skills-extra-dir" readonly
+          placeholder="留空则仅扫描默认目录" style="flex:1;min-width:0;cursor:default;" />
+        <button id="skills-dir-browse" class="btn-ghost btn-sm" style="flex-shrink:0;">浏览…</button>
+        <button id="skills-dir-clear"  class="btn-ghost btn-sm" style="flex-shrink:0;opacity:0.6;">✕</button>
+      </div>
+      <div class="proxy-tip" style="margin-top:8px;">默认扫描 ~/.claude/skills/ 及项目 .claude/skills/，此处可追加一个额外目录。</div>
+    </div>
+    <div class="settings-popup-footer">
+      <span id="skills-popup-msg" class="settings-msg"></span>
+      <button id="skills-popup-save" class="btn-primary btn-sm">保存</button>
+    </div>
+  </div>
+
+  <script src="lib/libs.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
