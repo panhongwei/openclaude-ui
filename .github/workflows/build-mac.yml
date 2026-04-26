@@ -37,8 +37,8 @@ jobs:
       - name: Package macOS dmg
         run: bun run build:chat:mac
         env:
-          # 禁用代码签名，避免没有 Apple 开发者证书时报错
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List build output
         run: ls -lh dist-electron/
