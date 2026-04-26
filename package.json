@@ -144,6 +144,7 @@
     "@types/react": "19.2.14",
     "electron": "^35.7.5",
     "electron-builder": "^25.1.8",
+    "highlight.js": "^10.7.3",
     "tsx": "^4.21.0",
     "typescript": "5.9.3"
   },
