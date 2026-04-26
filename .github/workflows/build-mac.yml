@@ -29,11 +29,10 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build renderer libs
-        run: bun run build:renderer-libs
-
       - name: Build Electron main process
-        run: bun run build:electron
+        # libs.js is pre-built and committed; skip build:renderer-libs to avoid
+        # highlight.js subpath resolution issues on CI, run build-electron.ts directly
+        run: bun run scripts/build-electron.ts
 
       - name: Package macOS dmg
         run: bun run build:chat:mac
