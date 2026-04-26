@@ -11,9 +11,13 @@
 
 ## 界面预览
 
-| 主界面 | Skill 执行 |
-|--------|-----------|
-| ![主界面](images/jiemian.JPG) | ![Skill执行](images/SKILL.JPG) |
+**主界面 — 项目侧边栏 + 聊天对话**
+
+![主界面](images/jiemian.JPG)
+
+**Skill 执行 — 实时工具调用可视化**
+
+![Skill执行](images/SKILL.JPG)
 
 ---
 
