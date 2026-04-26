@@ -92,6 +92,8 @@ Model:     qwen2.5-coder:7b
 
 > **提示：** API 地址填错是最常见的问题。Anthropic 不带 `/v1`，OpenAI 兼容接口一般带 `/v1`，以各平台文档为准。
 
+> **⚠️ 重要说明：** 目前只有配置 **Anthropic** 协议能够正常使用 Skill 系统，其它协议（OpenAI、DeepSeek、Ollama 等）在执行 Skill 时幻觉严重，结果不可靠，建议 Skill 相关功能仅在 Anthropic 模型下使用。
+
 ---
 
 ## Skill 使用
