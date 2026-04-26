@@ -37,50 +37,60 @@
 
 ### Windows（推荐）
 
-直接下载 `openclaude-chat Setup 0.6.0.exe`，双击安装，或使用 `win-unpacked` 目录中的便携版。
-
-```
-dist-electron/
-├── openclaude-chat Setup 0.6.0.exe   ← 安装版
-└── win-unpacked/openclaude-chat.exe  ← 便携版，解压即用
-```
-
-### 配置 API Key
-
-启动后，在顶栏点击 **设置** → 配置你的 API Key 和模型。
-
-也可通过 `/provider` 命令进行引导式配置：
-
-```
-/provider
-```
-
-**最快的 Claude 配置：**
-
-在应用设置中填入：
-- Provider: `Anthropic`
-- API Key: `sk-ant-...`
-- Model: `claude-sonnet-4-6`
-
-**最快的本地 Ollama 配置：**
-
-- Provider: `OpenAI Compatible`
-- Base URL: `http://localhost:11434/v1`
-- Model: `qwen2.5-coder:7b`
+直接下载 `openclaude-chat Setup 0.6.0.exe`，双击安装，或使用便携版解压后直接运行 `openclaude-chat.exe`。
 
 ---
 
-## 支持的模型 / Provider
+## 提供商 & 模型配置
 
-| Provider | 配置方式 |
-|----------|---------|
-| Anthropic Claude | 设置面板 / `/provider` |
-| OpenAI / OpenRouter | 设置面板 / `/provider` |
-| DeepSeek | 设置面板 / `/provider` |
-| Gemini | 设置面板 / `/provider` |
-| Ollama（本地） | 设置面板 / `/provider` |
-| GitHub Models | `/onboard-github` |
-| Groq / Mistral / LM Studio | OpenAI Compatible 接口 |
+启动后点击顶栏 **提供商 & 模型配置** → **添加提供商** → **添加**，填入以下三项后保存：
+
+| 字段 | 说明 |
+|------|------|
+| **API Key** | 对应平台申请的密钥 |
+| **API 地址** | 接口 Base URL（末尾不带 `/`） |
+| **Model** | 模型 ID，填写后需与平台一致 |
+
+保存后在界面输入框输入 `hi` 发送，收到回复即配置成功。
+
+### 常用提供商参考
+
+**Anthropic Claude**
+```
+API Key:   sk-ant-api03-xxxxxxxx
+API 地址:  https://api.anthropic.com
+Model:     claude-sonnet-4-6
+```
+
+**OpenAI**
+```
+API Key:   sk-xxxxxxxx
+API 地址:  https://api.openai.com/v1
+Model:     gpt-4o
+```
+
+**DeepSeek**
+```
+API Key:   sk-xxxxxxxx
+API 地址:  https://api.deepseek.com/v1
+Model:     deepseek-chat
+```
+
+**OpenRouter**（聚合平台，支持数百个模型）
+```
+API Key:   sk-or-xxxxxxxx
+API 地址:  https://openrouter.ai/api/v1
+Model:     deepseek/deepseek-chat-v3-0324:free
+```
+
+**Ollama（本地模型，无需 API Key）**
+```
+API Key:   ollama
+API 地址:  http://localhost:11434/v1
+Model:     qwen2.5-coder:7b
+```
+
+> **提示：** API 地址填错是最常见的问题。Anthropic 不带 `/v1`，OpenAI 兼容接口一般带 `/v1`，以各平台文档为准。
 
 ---
 
